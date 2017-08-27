@@ -1,19 +1,35 @@
+
 <ion-header>
 <ion-navbar color="primary">
-  <ion-title>Wedding</ion-title>
+  <button ion-button menuToggle="main-menu">
+      <ion-icon name="menu"></ion-icon>
+  </button>
+  <ion-title>
+    Home Page
+  </ion-title>
+
 </ion-navbar>
- 
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-item>
-     <ion-label floating>Wedding Id</ion-label>
-      <ion-input type="text" [(ngModel)]="weddingId"></ion-input>
-    </ion-item>
-  </ion-list>
-  <div padding>
-  <button ion-button color="primary" block (click)="register()">Enter</button>
-  </div>
-</ion-content>
+<ion-menu id="main-menu" [content]="mainmenu" persistent="true">
 
+  <ion-content class="menu-contents">
+    <ion-list>
+    <div padding class="name-header">Welcome Rohan</div>
+    
+    <div class="item">
+
+      <button ion-item *ngFor="let item of menuItems" (click)="menuItemClicked(item)">
+      <ion-icon class="pad-right" name="{{item.icon}}"></ion-icon>
+      {{item.name}}
+
+      </button>
+      
+    </div>
+    
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+
+<ion-nav id="nav" #mainmenu [root]="rootPage"></ion-nav>

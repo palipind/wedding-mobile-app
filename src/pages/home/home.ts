@@ -1,74 +1,91 @@
 import { Component } from '@angular/core';
-import { LoadingController, ToastController, NavController } from 'ionic-angular';
-import { Push, PushToken} from '@ionic/cloud-angular';
-import { WeddingApi } from '../../providers/wedding-api'
+import { NavController } from 'ionic-angular';
+import { RegistrationPage } from '../../pages/register/register';
+import { EventsPage } from '../../pages/events/events';
+import { DeviceTokenApi } from '../../providers/deviceToken-api';
+import { WeddingEventApi } from '../../providers/weddingEvent-api';
+import { UserRegistrationData } from '../../providers/userRegistration-data';
+import { UserDetailsPage } from '../../pages/user-details/user-details';
 
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html',
-  providers: [WeddingApi]
+	selector: 'page-home',
+	templateUrl: 'home.html',
+	providers: [DeviceTokenApi, WeddingEventApi]
 })
 
 export class HomePage {
-	weddingId: any;
-  	constructor(public navCtrl: NavController, public push: Push, private weddingApi: WeddingApi,
-  		public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
-	    this.push.register().then((t: PushToken) => {
-	  		return this.push.saveToken(t);
-		}).then((t: PushToken) => {
-	  		console.log('Token saved:', t.token);
+
+	userName : string;
+
+	menuItems = [
+	{ "name": "Home", "icon":"home" },
+	{ "name": "Events", "icon":"football" },
+	{ "name": "Setup Profile","icon":"person"},
+	{ "name": "About Us","icon":"information-circle"},
+	{ "name": "Unregister","icon":"exit" }
+	];
+
+	constructor(
+		public navCtrl: NavController,
+		public deviceTokenApi: DeviceTokenApi,
+		public weddingEventApi: WeddingEventApi,
+		public userData: UserRegistrationData) {
+
+		this.userData.getUserDetails().then((value) => {
+			this.userName = value["name"];
 		});
 	}
 
-  register() {
-    //Set loader to end in 10 seconds. Stop it manually by calling dismiss
-    let loading = this.loadingCtrl.create({
-      content: 'Please wait...',
-      dismissOnPageChange: true,
-      duration: 10000
-    });
-    loading.present();
+	menuItemClicked(item) {
+		var name = item["name"];
+		switch(name) {
+			
+			case "Events":
+			this.loadEvents();
+			break;
 
-    if (this.push.token != undefined) {
-      this.weddingApi.registerToken(this.weddingId, this.push.token.token).subscribe(
-          data => {
-          loading.dismiss();
-          console.log(data);
-        },
-          err => {
-          loading.dismiss();
-          var err = err.json();
-          var error = err["error"] != null ? err["error"] : "CONNECTION_ERROR";
-          this.handleError(error);
-        });
-    }
-    else {
-      console.log('Error cannot register, Token undefined');
-    }
-  }
+			case "Setup Profile":
+			this.navCtrl.push(UserDetailsPage);
+			break;
 
-  handleError(error: string) {
-    var errorMessage;
-    switch (error) {
-      case "RECORD_NOT_FOUND":
-        errorMessage = "We do not recognize this Wedding ID. Please try again.";
-        break;
+			case "Unregister":
+			this.unregister();
+			break;
+		}
+	};
 
-      case "CONNECTION_ERROR":
-        errorMessage = "The server is unreachable. Please try again."
-        break;
+	/**
+	*  Loads wedding events associated to a weddingId
+	*/
+	loadEvents(): void {
+		this.userData.getWeddingId().then((weddingId) => {
+			this.weddingEventApi.loadEvents(weddingId).subscribe(
+				data => {
+					this.navCtrl.push(EventsPage, data);
+				},
+				err => {
+					console.log("Error occurred getting wedding events", err);
+				}
+			);
+		});
+	}
 
-      case "UNKNOWN":
-      default:
-        errorMessage = "Error occurred. Please try again.";
-        break;
-    }
-
-    let toast = this.toastCtrl.create({
-      message: errorMessage,
-      duration: 3000,
-      position:"top"
-    });
-    toast.present();
-  }
+	/**
+	*  Unregisters user by removing weddingId key from storage.
+	*  WeddingId key when set makes HomePage as the app Root Page
+	*/
+	unregister(): void {
+		this.userData.getDeviceToken().then((deviceToken) => {
+			this.deviceTokenApi.deleteToken(deviceToken).subscribe(
+				data => {
+					this.userData.removeWeddingId();
+					this.navCtrl.setRoot(RegistrationPage);
+				},
+				err => {
+					//Not removing from storage in this case
+					console.log("Error occurred during unregistration", err);
+				}
+			);
+		});
+	};
 }

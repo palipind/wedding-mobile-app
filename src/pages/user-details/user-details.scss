@@ -1,0 +1,39 @@
+page-user-details {
+	.slideName {
+		background-image: url('../assets/img/userDetails/1.jpg');
+ 		background-repeat: no-repeat;
+    	background-attachment: fixed;
+    	background-size: cover;
+	}
+
+	.slideSide {
+		background-image: url('../assets/img/userDetails/2.jpg');
+ 		background-repeat: no-repeat;
+    	background-attachment: fixed;
+    	background-size: cover;
+	}
+
+	.slideProfilePic {
+		background-image: url('../assets/img/userDetails/3.jpg');
+ 		background-repeat: no-repeat;
+    	background-attachment: fixed;
+    	background-size: cover;
+	}
+
+	.lblField {
+		font-weight:bold;
+		color:white;
+	}
+
+	.itemField {
+		color:white;
+		font-weight:bold;
+		background-color:transparent;
+	}
+
+	/* below style is needed to prevent view from moving
+	up when input field is focussed*/
+	.input-cover {
+  	position: static;
+	}
+}

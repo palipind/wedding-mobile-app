@@ -1,0 +1,73 @@
+<ion-header>
+
+</ion-header>
+<ion-content [style.background-size]="'100% ' + shouldHeight">
+<ion-slides pager>
+
+  <ion-slide class="slideName">
+
+
+    <ion-list padding>
+
+    <ion-label class="lblField">What's your name?</ion-label>
+      <ion-item class="itemField">
+        <ion-input type="text" [(ngModel)]="txtName"></ion-input>
+      </ion-item>
+      <div padding>
+      <button ion-button color="primary" icon-right (click)="slideNext()">
+        Next
+        <ion-icon name='arrow-dropright-circle'></ion-icon>
+      </button>
+      </div>
+
+    </ion-list>
+
+  </ion-slide>
+
+  <ion-slide class="slideSide">
+    <ion-label class="lblField">Whose Side Are You On? </ion-label>
+      <ion-list no-lines radio-group [(ngModel)]="radSide">
+        <ion-item class="itemField">
+          <ion-label>Ladkewaale</ion-label>
+          <ion-radio checked="true" value="groom"></ion-radio>
+        </ion-item>
+
+        <ion-item class="itemField">
+          <ion-label>Ladkiwaale</ion-label>
+          <ion-radio value="bride"></ion-radio>
+        </ion-item>
+      <div padding>
+        <button ion-button color="primary" icon-right (click)="slideNext()">
+          Next
+          <ion-icon name='arrow-dropright-circle'></ion-icon>
+        </button>
+        </div>
+      </ion-list>
+  </ion-slide>
+
+  <ion-slide class="slideProfilePic">
+
+       <ion-label class="lblField">Profile Picture</ion-label>
+  <img [src]="profileImage" style="width: 40%">
+
+
+<ion-buttons>
+<div padding>
+      <button ion-button color="primary" icon-right
+      (click)="presentActionSheet()">
+        Select Image
+        <ion-icon name="camera"></ion-icon>
+      </button>
+      </div>
+    </ion-buttons>
+<div padding>
+     <button ion-button color="primary" icon-right (click) = "submitForm()">
+          Next
+          <ion-icon name='arrow-dropright-circle'></ion-icon>
+        </button>
+        </div>
+  </ion-slide>
+
+
+</ion-slides>
+</ion-content>

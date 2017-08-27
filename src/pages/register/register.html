@@ -1,0 +1,19 @@
+<ion-header> 
+</ion-header>
+<ion-content padding [style.background-size]="'100% ' + shouldHeight" class="mainBody">
+
+	<div padding class="heading">
+		<h1>Enhance your wedding experience</h1>
+	</div>
+	<ion-list align="center">
+		<ion-item class="itemWeddingId">
+			<ion-label color="white" floating>Wedding Id</ion-label>
+			<ion-input type="text" [(ngModel)]="weddingId"></ion-input>
+		</ion-item>
+	</ion-list>
+  	
+  	<div padding>
+  		<button ion-button color="primary" block (click)="registerUser()">Enter</button>
+  	</div>
+</ion-content>
+
